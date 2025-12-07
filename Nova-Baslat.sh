@@ -12,10 +12,12 @@ NC='\033[0m'
 # Dosya yollari
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 HATA_RAPORU="$SCRIPT_DIR/hata-raporu.html"
+HATA_METNI="$SCRIPT_DIR/HATA-MESAJI.txt"
 LOGFILE="$SCRIPT_DIR/nova.log"
 
 # Temiz basla
 rm -f "$HATA_RAPORU"
+rm -f "$HATA_METNI"
 echo "Nova baslatiyor..." > "$LOGFILE"
 
 clear
@@ -138,27 +140,56 @@ EOF
     sed -i.bak "s/COZUM_PLACEHOLDER/$COZUM/g" "$HATA_RAPORU"
     rm -f "$HATA_RAPORU.bak"
 
+    # Metin dosyasina da yaz
+    cat > "$HATA_METNI" << TXTEOF
+================================================
+NOVA HATA RAPORU
+================================================
+
+HATA: $BASLIK
+
+MESAJ: $MESAJ
+
+COZUM:
+$COZUM
+
+================================================
+Bu dosyayi kopyalayip destek alabilirsiniz.
+Tarih: $(date)
+================================================
+TXTEOF
+
     # Tarayicida ac
     if command -v xdg-open &> /dev/null; then
         xdg-open "$HATA_RAPORU" &
+        xdg-open "$HATA_METNI" &
     elif command -v open &> /dev/null; then
         open "$HATA_RAPORU" &
+        open "$HATA_METNI" &
     fi
 
     # Console'da da goster
     clear
     echo ""
-    echo "================================================"
-    echo "          HATA OLUSTU!"
-    echo "================================================"
+    echo -e "${RED}================================================${NC}"
+    echo -e "${RED}          HATA OLUSTU!${NC}"
+    echo -e "${RED}================================================${NC}"
     echo ""
     echo -e "${RED}$BASLIK${NC}"
     echo ""
     echo "$MESAJ"
     echo ""
-    echo "Cozum icin tarayicinizda acilan sayfaya bakin."
+    echo "================================================"
     echo ""
-    read -p "Devam etmek icin Enter'a basin..."
+    echo "> Tarayicinizda detayli cozum acildi"
+    echo "> HATA-MESAJI.txt dosyasi olusturuldu (kopyalayabilirsiniz)"
+    echo ""
+    echo "================================================"
+    echo ""
+    echo "Bu pencereyi ACIK TUTUN!"
+    echo "Ekran goruntusu alin veya metni kopyalayin."
+    echo ""
+    read -p "Kapatmak icin Enter'a basin..."
 
     exit 1
 }

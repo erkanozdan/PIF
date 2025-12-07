@@ -6,10 +6,12 @@ title Nova AI Chatbot
 
 :: Hata raporu HTML dosyasi
 set HATA_RAPORU=%~dp0hata-raporu.html
+set HATA_METNI=%~dp0HATA-MESAJI.txt
 set LOGFILE=%~dp0nova.log
 
 :: Temiz basla
 if exist "%HATA_RAPORU%" del "%HATA_RAPORU%"
+if exist "%HATA_METNI%" del "%HATA_METNI%"
 echo Nova baslatiyor... > "%LOGFILE%"
 
 cls
@@ -205,11 +207,34 @@ echo ^</body^>
 echo ^</html^>
 ) > "%HATA_RAPORU%"
 
+:: Metin dosyasina da yaz
+(
+echo ================================================
+echo NOVA HATA RAPORU
+echo ================================================
+echo.
+echo HATA: %BASLIK%
+echo.
+echo MESAJ: %MESAJ%
+echo.
+echo COZUM:
+echo %COZUM%
+echo.
+echo ================================================
+echo Bu dosyayi kopyalayip destek alabilirsiniz.
+echo Tarih: %date% %time%
+echo ================================================
+) > "%HATA_METNI%"
+
 :: Hata raporunu tarayicida ac
 start "" "%HATA_RAPORU%"
 
+:: Metin dosyasini da ac
+start notepad "%HATA_METNI%"
+
 :: Console'da da goster
 cls
+color 0C
 echo.
 echo ================================================
 echo          HATA OLUSTU!
@@ -219,10 +244,19 @@ echo %BASLIK%
 echo.
 echo %MESAJ%
 echo.
-echo Cozum icin tarayicinizda acilan sayfaya bakin.
+echo ================================================
 echo.
-echo Veya bu pencereyi ACIK BIRAKIN ve ekran goruntusu alin.
+echo ^> Tarayicinizda detayli cozum acildi
+echo ^> Notepad'de hata metni acildi ^(kopyalayabilirsiniz^)
+echo ^> HATA-MESAJI.txt dosyasini da kontrol edin
 echo.
-pause
+echo ================================================
+echo.
+echo Bu pencereyi ACIK TUTUN!
+echo Ekran goruntusu alin veya metni kopyalayin.
+echo.
+echo Kapatmak icin bir tusa basin...
+echo.
+pause >nul
 
 exit /b 1
