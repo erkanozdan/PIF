@@ -56,15 +56,19 @@
 
 ### Yöntem 1: Çift Tıkla Başlat (En Kolay) ⭐
 
+**SADECE ÇİFT TIKLAYIN - HERŞEYİ OTOMATIK YAPAR!**
+
 #### Windows
-1. `Nova.bat` dosyasına **çift tıklayın**
-2. Otomatik olarak eksiklikler kontrol edilir ve kurulur
-3. Program açılır!
+1. **`Nova-Baslat.bat`** dosyasına **çift tıklayın**
+2. Hata varsa otomatik olarak tarayıcıda gösterilir
+3. Her şey hazırsa program açılır!
 
 #### macOS / Linux
-1. Terminal'de: `bash Nova.sh` veya dosyaya çift tıklayın
-2. Otomatik olarak eksiklikler kontrol edilir ve kurulur
-3. Program açılır!
+1. **`Nova-Baslat.sh`** dosyasına çift tıklayın (veya Terminal'de çalıştırın)
+2. Hata varsa otomatik olarak tarayıcıda gösterilir
+3. Her şey hazırsa program açılır!
+
+**🎯 Önemli:** Eğer hata alırsanız, tarayıcınızda otomatik açılan hata raporu size ne yapmanız gerektiğini adım adım gösterir!
 
 ### Yöntem 2: Masaüstü Kısayolu Oluştur
 
