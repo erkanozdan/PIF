@@ -12,63 +12,81 @@ const PROVIDER_INFO = [
     name: 'Ollama',
     description: 'Yerel AI modelleri (API key gerekmez)',
     link: 'https://ollama.ai',
-    requiresKey: false
+    requiresKey: false,
+    isFree: true,
+    pricing: 'Tamamen ücretsiz - Yerel'
   },
   {
     id: 'openai',
     name: 'OpenAI',
     description: 'GPT-4, GPT-3.5 ve diğer OpenAI modelleri',
     link: 'https://platform.openai.com/api-keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: false,
+    pricing: 'Ücretli - Pay-as-you-go'
   },
   {
     id: 'anthropic',
     name: 'Anthropic',
     description: 'Claude 3 model ailesi',
     link: 'https://console.anthropic.com/settings/keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: false,
+    pricing: 'Ücretli - Pay-as-you-go'
   },
   {
     id: 'google',
     name: 'Google',
     description: 'Gemini model ailesi',
     link: 'https://makersuite.google.com/app/apikey',
-    requiresKey: true
+    requiresKey: true,
+    isFree: true,
+    pricing: 'Ücretsiz tier mevcut'
   },
   {
     id: 'mistral',
     name: 'Mistral AI',
     description: 'Mistral ve Mixtral modelleri',
     link: 'https://console.mistral.ai/api-keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: false,
+    pricing: 'Ücretli - Pay-as-you-go'
   },
   {
     id: 'cohere',
     name: 'Cohere',
     description: 'Command modelleri',
     link: 'https://dashboard.cohere.com/api-keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: true,
+    pricing: 'Trial tier mevcut'
   },
   {
     id: 'deepseek',
     name: 'DeepSeek',
     description: 'DeepSeek Chat ve Coder modelleri',
     link: 'https://platform.deepseek.com/api_keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: false,
+    pricing: 'Ücretli - Düşük fiyat'
   },
   {
     id: 'moonshot',
     name: 'Kimi (Moonshot)',
     description: 'Kimi AI modelleri (8k, 32k, 128k)',
     link: 'https://platform.moonshot.cn/console/api-keys',
-    requiresKey: true
+    requiresKey: true,
+    isFree: false,
+    pricing: 'Ücretli'
   },
   {
     id: 'xai',
     name: 'Grok (xAI)',
     description: 'Grok modelleri',
     link: 'https://console.x.ai',
-    requiresKey: true
+    requiresKey: true,
+    isFree: true,
+    pricing: 'Bazı modeller ücretsiz'
   }
 ];
 
@@ -132,18 +150,28 @@ export default function Settings({ apiKeys, onClose, onSaveApiKey }: SettingsPro
               </p>
 
               {PROVIDER_INFO.map(provider => (
-                <div key={provider.id} className="bg-nova-darker p-4 rounded-lg">
+                <div key={provider.id} className="bg-nova-darker p-4 rounded-lg border border-gray-700">
                   <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-semibold text-lg">{provider.name}</h3>
-                      <p className="text-sm text-gray-400">{provider.description}</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-lg">{provider.name}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          provider.isFree
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                            : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                        }`}>
+                          {provider.isFree ? '✓ Ücretsiz' : '💳 Ücretli'}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-400 mb-1">{provider.description}</p>
+                      <p className="text-xs text-gray-500">{provider.pricing}</p>
                     </div>
                     {provider.requiresKey && (
                       <a
                         href={provider.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-nova-blue hover:text-blue-400 text-sm flex items-center gap-1"
+                        className="text-nova-blue hover:text-blue-400 text-sm flex items-center gap-1 ml-4"
                       >
                         API Key Al
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

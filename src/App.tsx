@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
 import Settings from './components/Settings';
+import UsageDashboard from './components/UsageDashboard';
 import { aiService } from './services/aiService';
 
 export interface Conversation {
@@ -36,6 +37,7 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [files, setFiles] = useState<FileAttachment[]>([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [showUsageDashboard, setShowUsageDashboard] = useState(false);
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [selectedProvider, setSelectedProvider] = useState('ollama');
   const [selectedModel, setSelectedModel] = useState('');
@@ -246,6 +248,7 @@ function App() {
         onSelectConversation={selectConversation}
         onDeleteConversation={deleteConversation}
         onOpenSettings={() => setShowSettings(true)}
+        onOpenUsage={() => setShowUsageDashboard(true)}
       />
 
       <ChatArea
@@ -270,6 +273,13 @@ function App() {
             await window.electronAPI.saveApiKey(provider, key);
             await loadApiKeys();
           }}
+        />
+      )}
+
+      {showUsageDashboard && (
+        <UsageDashboard
+          apiKeys={apiKeys}
+          onClose={() => setShowUsageDashboard(false)}
         />
       )}
     </div>
