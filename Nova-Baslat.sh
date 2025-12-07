@@ -157,7 +157,15 @@ $COZUM
 Bu dosyayi kopyalayip destek alabilirsiniz.
 Tarih: $(date)
 ================================================
+
+=== LOG DOSYASI (nova.log) ===
+
 TXTEOF
+
+    # Log dosyasini da ekle (varsa)
+    if [ -f "$LOGFILE" ]; then
+        cat "$LOGFILE" >> "$HATA_METNI"
+    fi
 
     # Tarayicida ac
     if command -v xdg-open &> /dev/null; then
@@ -227,9 +235,12 @@ if [ ! -d "node_modules" ]; then
     npm install > "$LOGFILE" 2>&1
 
     if [ $? -ne 0 ]; then
+        # Log dosyasindan hatayi al
+        HATA_DETAY=$(tail -30 "$LOGFILE" | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+
         show_error "Yukleme Hatasi" \
-            "Bagimliliklar yuklenemedi!" \
-            "1. Internet baglantinizi kontrol edin<br>2. Tekrar deneyin<br>3. Hata devam ederse Terminal'de:<br>&nbsp;&nbsp;&nbsp;npm cache clean --force<br>&nbsp;&nbsp;&nbsp;npm install"
+            "Bagimliliklar yuklenemedi! Hata detaylari nova.log dosyasinda." \
+            "1. Internet baglantinizi kontrol edin<br>2. Terminal'de:<br>&nbsp;&nbsp;&nbsp;npm cache clean --force<br>&nbsp;&nbsp;&nbsp;npm install<br>3. Tekrar Nova-Baslat.sh dosyasini calistirin<br><br><strong>Hata Detaylari:</strong><br><pre style='background:#000;color:#0f0;padding:10px;overflow:auto;max-height:200px;'>$HATA_DETAY</pre>"
     fi
 fi
 
@@ -243,7 +254,7 @@ echo "> Uygulama penceresi acildiginda bu pencereyi KAPATMAYIN!"
 echo "> Nova'yi kapatmak icin bu pencerede Ctrl+C yapin"
 echo ""
 
-npm start 2>&1
+npm start >> "$LOGFILE" 2>&1
 
 # Hata kontrolu
 if [ $? -ne 0 ]; then
@@ -251,9 +262,13 @@ if [ $? -ne 0 ]; then
     echo ""
     echo "[HATA] Program baslatilirken hata olustu!"
     echo ""
+
+    # Log dosyasindan hatayi al
+    HATA_DETAY=$(tail -50 "$LOGFILE" | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+
     show_error "Baslangic Hatasi" \
-        "Nova baslatilirken hata olustu!" \
-        "Lutfen ekran goruntusunu alin.<br><br>Deneyebilecekleriniz:<br>1. node_modules klasorunu silin<br>2. Nova-Baslat.sh dosyasini tekrar calistirin"
+        "Nova baslatilirken hata olustu! Hata detaylari nova.log dosyasinda." \
+        "Deneyebilecekleriniz:<br>1. node_modules klasorunu silin<br>2. Terminal'de: npm install<br>3. Nova-Baslat.sh dosyasini tekrar calistirin<br><br><strong>Hata Detaylari:</strong><br><pre style='background:#000;color:#0f0;padding:10px;overflow:auto;max-height:300px;'>$HATA_DETAY</pre>"
 fi
 
 read -p "Devam etmek icin Enter'a basin..."

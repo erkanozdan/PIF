@@ -55,7 +55,9 @@ if not exist "node_modules" (
     npm install >"%LOGFILE%" 2>&1
 
     if !errorlevel! neq 0 (
-        call :HataGoster "Yukleme Hatasi" "Bagimliliklar yuklenemedi!" "1. Internet baglantinizi kontrol edin<br>2. Tekrar deneyin<br>3. Hata devam ederse:<br>&nbsp;&nbsp;&nbsp;- Command Prompt acin<br>&nbsp;&nbsp;&nbsp;- cd [Nova klasoru]<br>&nbsp;&nbsp;&nbsp;- npm cache clean --force<br>&nbsp;&nbsp;&nbsp;- npm install"
+        echo. >> "%LOGFILE%"
+        echo === HATA OLUSTU === >> "%LOGFILE%"
+        call :HataGoster "Yukleme Hatasi" "Bagimliliklar yuklenemedi! Hata detaylari nova.log dosyasinda." "1. Internet baglantinizi kontrol edin<br>2. Command Prompt acin ve:<br>&nbsp;&nbsp;&nbsp;cd %~dp0<br>&nbsp;&nbsp;&nbsp;npm cache clean --force<br>&nbsp;&nbsp;&nbsp;npm install<br>3. Nova-Baslat.bat dosyasina tekrar cift tiklayin<br><br><strong>Hata icin nova.log dosyasini kontrol edin</strong>"
         exit /b 1
     )
 )
@@ -70,7 +72,7 @@ echo ^> Uygulama penceresi acildiginda bu pencereyi KAPATMAYIN^!
 echo ^> Nova'yi kapatmak icin bu pencerede Ctrl+C yapin
 echo.
 
-npm start 2>&1
+npm start >> "%LOGFILE%" 2>&1
 
 :: Hata kontrolu
 if !errorlevel! neq 0 (
@@ -78,7 +80,9 @@ if !errorlevel! neq 0 (
     echo.
     echo [HATA] Program baslatilirken hata olustu!
     echo.
-    call :HataGoster "Baslangic Hatasi" "Nova baslatilirken hata olustu!" "Lutfen ekran goruntusunu alin ve destek isteyin.<br><br>Deneyebilecekleriniz:<br>1. node_modules klasorunu silin<br>2. Nova-Baslat.bat dosyasina tekrar cift tiklayin"
+    echo Hata detaylari: %LOGFILE%
+    echo.
+    call :HataGoster "Baslangic Hatasi" "Nova baslatilirken hata olustu! Hata detaylari nova.log dosyasinda." "Deneyebilecekleriniz:<br>1. node_modules klasorunu silin<br>2. Command Prompt acin ve:<br>&nbsp;&nbsp;&nbsp;cd %~dp0<br>&nbsp;&nbsp;&nbsp;npm install<br>3. Nova-Baslat.bat dosyasina tekrar cift tiklayin<br><br><strong>Hata icin nova.log dosyasini kontrol edin</strong>"
 )
 
 pause
@@ -224,7 +228,15 @@ echo ================================================
 echo Bu dosyayi kopyalayip destek alabilirsiniz.
 echo Tarih: %date% %time%
 echo ================================================
+echo.
+echo === LOG DOSYASI ^(nova.log^) ===
+echo.
 ) > "%HATA_METNI%"
+
+:: Log dosyasini da ekle (varsa)
+if exist "%LOGFILE%" (
+    type "%LOGFILE%" >> "%HATA_METNI%"
+)
 
 :: Hata raporunu tarayicida ac
 start "" "%HATA_RAPORU%"
